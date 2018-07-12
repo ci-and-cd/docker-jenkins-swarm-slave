@@ -25,7 +25,6 @@ ENV JAVA_OPTS -Duser.language=${IMAGE_ARG_LANGUAGE:-en} -Duser.region=${IMAGE_AR
 
 
 RUN set -ex \
-  && sudo chown -R ${IMAGE_ARG_USER:-ubuntu}:${IMAGE_ARG_USER:-ubuntu} ${HOME} \
   && sudo curl --create-dirs -sSLo /usr/share/jenkins/swarm-client-${IMAGE_ARG_VERSION:-3.12}-jar-with-dependencies.jar \
     https://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/swarm-client/${IMAGE_ARG_VERSION:-3.12}/swarm-client-${IMAGE_ARG_VERSION:-3.12}.jar \
   && sudo chmod 755 /usr/share/jenkins \
