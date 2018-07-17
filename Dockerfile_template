@@ -44,7 +44,7 @@ RUN set -ex \
 VOLUME /home/${IMAGE_ARG_USER:-ubuntu}
 
 
-COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY docker /
 ENV PATH /usr/local/bin:${PATH}
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
