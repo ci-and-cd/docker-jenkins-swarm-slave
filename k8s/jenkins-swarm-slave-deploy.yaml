@@ -36,7 +36,7 @@ spec:
               name: jenkins-swarm-slave-secret
               key: CI_INFRA_OPT_GIT_AUTH_TOKEN
         - name: JENKINS_PORT_8080_TCP_ADDR
-          value: "jenkins.internal"
+          value: "jenkins"
         - name: JENKINS_PORT_8080_TCP_PORT
           value: "18083"
         volumeMounts:

@@ -20,17 +20,17 @@ services:
       - IMAGE_ARG_USER=${IMAGE_ARG_USER:-ubuntu}
       - IMAGE_ARG_VERSION=${IMAGE_ARG_VERSION:-3.12}
     command: ["-username", "slave", "-password", "slave_pass", "-executors", "5"]
-    container_name: ${JENKINS_SLAVE_DOMAIN:-jenkins-swarm-slave}.${INFRASTRUCTURE:-local}
+    container_name: ${CONTAINER_HOST_NAME:-jenkins-swarm-slave}
     environment:
     - CI_INFRA_OPT_GIT_AUTH_TOKEN=${CI_INFRA_OPT_GIT_AUTH_TOKEN:-your_CI_INFRA_OPT_GIT_AUTH_TOKEN}
-    - JENKINS_PORT_8080_TCP_ADDR=${JENKINS_PORT_8080_TCP_ADDR:-jenkins}.${INFRASTRUCTURE:-local}
+    - JENKINS_PORT_8080_TCP_ADDR=${JENKINS_PORT_8080_TCP_ADDR:-jenkins}
     - JENKINS_PORT_8080_TCP_PORT=${JENKINS_PORT_8080_TCP_PORT:-8080}
 
     #external_links:
-    #- jenkins.${INFRASTRUCTURE:-local}:jenkins.${INFRASTRUCTURE:-local}
-    #- nexus.${INFRASTRUCTURE:-local}:nexus3.${INFRASTRUCTURE:-local}
-    #- mvnsite.${INFRASTRUCTURE:-local}:mvnsite.${INFRASTRUCTURE:-local}
-    hostname: ${JENKINS_SLAVE_DOMAIN:-jenkins-swarm-slave}.${INFRASTRUCTURE:-local}
+    #- jenkins:jenkins
+    #- nexus:nexus3
+    #- mvnsite:mvnsite
+    hostname: ${CONTAINER_HOST_NAME:-jenkins-swarm-slave}
     image: ${IMAGE_PREFIX:-cirepo}/${IMAGE_NAME:-jenkins-swarm-slave}:${IMAGE_TAG:-3.12-en_US.UTF-8_Etc.UTC-bionic}
     networks:
       local-network:
