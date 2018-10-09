@@ -18,8 +18,9 @@ services:
       - IMAGE_ARG_TZ_ZONE=${IMAGE_ARG_TZ_ZONE:-UTC}
 
       - IMAGE_ARG_USER=${IMAGE_ARG_USER:-ubuntu}
-      - IMAGE_ARG_VERSION=${IMAGE_ARG_VERSION:-3.12}
-    command: ["-username", "slave", "-password", "slave_pass", "-executors", "5"]
+      - IMAGE_ARG_VERSION=${IMAGE_ARG_VERSION:-3.14}
+    #command: ["-username", "slave", "-password", "slave_pass", "-executors", "3"]
+    command: ${JENKINS_SWARN_SLAVE_COMMAND:--username slave -password slave_pass -executors 3}
     container_name: ${CONTAINER_HOST_NAME:-jenkins-swarm-slave}
     environment:
     - CI_INFRA_OPT_GIT_AUTH_TOKEN=${CI_INFRA_OPT_GIT_AUTH_TOKEN:-your_CI_INFRA_OPT_GIT_AUTH_TOKEN}
@@ -31,7 +32,7 @@ services:
     #- nexus:nexus3
     #- mvnsite:mvnsite
     hostname: ${CONTAINER_HOST_NAME:-jenkins-swarm-slave}
-    image: ${IMAGE_PREFIX:-cirepo}/${IMAGE_NAME:-jenkins-swarm-slave}:${IMAGE_TAG:-3.12-en_US.UTF-8_Etc.UTC-bionic}
+    image: ${IMAGE_PREFIX:-cirepo}/${IMAGE_NAME:-jenkins-swarm-slave}:${IMAGE_TAG:-3.14-en_US.UTF-8_Etc.UTC-bionic}
     networks:
       local-network:
         ipv4_address: 172.16.238.36

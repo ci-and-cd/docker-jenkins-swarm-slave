@@ -23,8 +23,10 @@ sudo chmod a+rw /var/run/docker.sock
 - `export CI_INFRA_OPT_GIT_AUTH_TOKEN=<your_CI_INFRA_OPT_GIT_AUTH_TOKEN>`
 
 - Create a user
+e.g. slave/slave_pass
 
-- Replace user/password in deploy descriptor of k8s or docker-compose
+- Replace user/password in deploy descriptor of k8s or docker-compose or export JENKINS_SWARN_SLAVE_COMMAND
+e.g. `export JENKINS_SWARN_SLAVE_COMMAND="-username slave -password slave_pass -executors 3"`
 
 ## Provision on k8s
 
