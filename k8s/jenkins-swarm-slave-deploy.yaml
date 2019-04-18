@@ -30,11 +30,11 @@ spec:
             cpu: "1"
             memory: 1024Mi
         env:
-        - name: CI_INFRA_OPT_GIT_AUTH_TOKEN
+        - name: JENKINS_SWARN_SLAVE_COMMAND
           valueFrom:
             secretKeyRef:
               name: jenkins-swarm-slave-secret
-              key: CI_INFRA_OPT_GIT_AUTH_TOKEN
+              key: JENKINS_SWARN_SLAVE_COMMAND
         - name: JENKINS_PORT_8080_TCP_ADDR
           value: "jenkins"
         - name: JENKINS_PORT_8080_TCP_PORT

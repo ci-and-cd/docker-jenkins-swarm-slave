@@ -23,13 +23,12 @@ services:
     command: ${JENKINS_SWARN_SLAVE_COMMAND:--username slave -password slave_pass -executors 3}
     container_name: ${CONTAINER_HOST_NAME:-standalone.jenkins-swarm-slave}
     environment:
-    - CI_INFRA_OPT_GIT_AUTH_TOKEN=${CI_INFRA_OPT_GIT_AUTH_TOKEN:-your_CI_INFRA_OPT_GIT_AUTH_TOKEN}
-    - JENKINS_PORT_8080_TCP_ADDR=${JENKINS_PORT_8080_TCP_ADDR:-jenkins}
+    - JENKINS_PORT_8080_TCP_ADDR=${JENKINS_PORT_8080_TCP_ADDR:-standalone.jenkins}
     - JENKINS_PORT_8080_TCP_PORT=${JENKINS_PORT_8080_TCP_PORT:-8080}
 
     #external_links:
-    #- jenkins:jenkins
-    #- nexus:nexus3
+    #- standalone.jenkins:standalone.jenkins
+    #- standalone.nexus:standalone.nexus3
     #- mvnsite:mvnsite
     hostname: ${CONTAINER_HOST_NAME:-standalone.jenkins-swarm-slave}
     image: ${IMAGE_PREFIX:-cirepo/}${IMAGE_NAME:-jenkins-swarm-slave}:${IMAGE_TAG:-3.15-en_US.UTF-8_Etc.UTC-bionic}

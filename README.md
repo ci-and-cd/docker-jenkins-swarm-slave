@@ -5,11 +5,6 @@ jenkins-swarm-slave
 see: carlossg/jenkins-swarm-slave
 see: evarga/jenkins-slave
 
-## Environment variables
-
-- CI_INFRA_OPT_GIT_AUTH_TOKEN
-> see docker-gitlab/gitlab-runner for more info
-
 ## Note
 
 This should be done by a cron script on host that fix permission of '/var/run/docker.sock' periodically
@@ -19,8 +14,6 @@ sudo chmod a+rw /var/run/docker.sock
 ```
 
 ## Auto-provision slaves
-
-- `export CI_INFRA_OPT_GIT_AUTH_TOKEN=<your_CI_INFRA_OPT_GIT_AUTH_TOKEN>`
 
 - Create a user
 e.g. slave/slave_pass
@@ -32,12 +25,9 @@ e.g. `export JENKINS_SWARN_SLAVE_COMMAND="-username slave -password slave_pass -
 
 - Do steps in 'Auto-provision slaves' section
 
-- Generate jenkins-swarm-slave-secret.yaml
+- Edit jenkins-swarm-slave-secret.yaml
 
-```sh
-sed "s#<PUT_BASE64_CI_INFRA_OPT_GIT_AUTH_TOKEN_HERE_MANUALLY>#$(echo -n ${CI_INFRA_OPT_GIT_AUTH_TOKEN} | base64 -w 0)#" jenkins-swarm-slave-secret.template \
-> jenkins-swarm-slave-secret.yaml
-```
+replace `<PUT_JENKINS_SWARN_SLAVE_COMMAND_HERE_MANUALLY>` to `-username slave -password slave_pass -executors 3`
 
 - Run `kubectl create -f jenkins-swarm-slave-secret.yaml` and `kubectl create -f jenkins-swarm-slave-deploy.yaml` to deploy
 
