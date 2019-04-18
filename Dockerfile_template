@@ -34,8 +34,8 @@ COPY --from=cirepo/locale:%IMAGE_ARG_LOCALE%.%IMAGE_ARG_ENCODING%_%IMAGE_ARG_TZ_
 
 
 RUN set -ex \
-  && sudo curl --create-dirs -sSLo /usr/share/jenkins/swarm-client-${IMAGE_ARG_VERSION:-3.14}-jar-with-dependencies.jar \
-    https://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/swarm-client/${IMAGE_ARG_VERSION:-3.14}/swarm-client-${IMAGE_ARG_VERSION:-3.14}.jar \
+  && sudo curl --create-dirs -sSLo /usr/share/jenkins/swarm-client-${IMAGE_ARG_VERSION:-3.15}-jar-with-dependencies.jar \
+    https://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/swarm-client/${IMAGE_ARG_VERSION:-3.15}/swarm-client-${IMAGE_ARG_VERSION:-3.15}.jar \
   && sudo chmod 755 /usr/share/jenkins \
   && mkdir -p /home/${IMAGE_ARG_USER:-ubuntu}/.m2 \
   && mkdir -p /home/${IMAGE_ARG_USER:-ubuntu}/.ssh
