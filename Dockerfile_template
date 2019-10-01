@@ -1,5 +1,5 @@
 
-FROM cirepo/cibase:latest-bionic
+FROM debian:buster
 
 
 
@@ -23,38 +23,58 @@ ARG IMAGE_ARG_VERSION
 
 
 
-ENV HOME /home/${IMAGE_ARG_USER:-ubuntu}
+ENV HOME /home/${IMAGE_ARG_USER:-debian}
 
 ENV JAVA_OPTS -Duser.language=${IMAGE_ARG_LANGUAGE:-en} -Duser.region=${IMAGE_ARG_REGION:-US} -Dfile.encoding=${IMAGE_ARG_ENCODING:-UTF-8} -Duser.timezone=${IMAGE_ARG_TZ_AREA:-Etc}/${IMAGE_ARG_TZ_ZONE:-UTC} ${IMAGE_ARG_JAVA_OPTS}
-# Do not set LANG or LC_ALL by ENV instruction under ubuntu bionic or you will get "/bin/bash: warning: setlocale: LC_ALL: cannot change locale"
+# Do not set LANG or LC_ALL by ENV instruction under debian buster or you will get "/bin/bash: warning: setlocale: LC_ALL: cannot change locale"
 #ENV LANG ${IMAGE_ARG_LOCALE:-en_US}.${IMAGE_ARG_ENCODING:-UTF-8}
 #ENV LC_ALL ${IMAGE_ARG_LOCALE:-en_US}.${IMAGE_ARG_ENCODING:-UTF-8}
 
 
-COPY --from=cirepo/locale:%IMAGE_ARG_LOCALE%.%IMAGE_ARG_ENCODING%_%IMAGE_ARG_TZ_AREA%.%IMAGE_ARG_TZ_ZONE%-bionic-archive /data/root /
-
-
-RUN set -ex \
-  && sudo curl --create-dirs -sSLo /usr/share/jenkins/swarm-client-${IMAGE_ARG_VERSION:-3.15}-jar-with-dependencies.jar \
-    https://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/swarm-client/${IMAGE_ARG_VERSION:-3.15}/swarm-client-${IMAGE_ARG_VERSION:-3.15}.jar \
-  && sudo chmod 755 /usr/share/jenkins \
-  && mkdir -p /home/${IMAGE_ARG_USER:-ubuntu}/.m2 \
-  && mkdir -p /home/${IMAGE_ARG_USER:-ubuntu}/.ssh
-
-
-VOLUME /home/${IMAGE_ARG_USER:-ubuntu}
-
-
-COPY docker /
-ENV PATH /usr/local/bin:${PATH}
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+#COPY --from=cirepo/locale:%IMAGE_ARG_LOCALE%.%IMAGE_ARG_ENCODING%_%IMAGE_ARG_TZ_AREA%.%IMAGE_ARG_TZ_ZONE%-buster-archive /data/root /
 
 
 # install netstat to allow connection health check with
 # netstat -tan | grep ESTABLISHED
 RUN set -ex \
-  && sudo sed -i "s/http:\/\/archive.ubuntu.com\/ubuntu\//http:\/\/${IMAGE_ARG_APT_MIRROR:-archive.ubuntu.com}\/ubuntu\//g" /etc/apt/sources.list \
-  && sudo apt-get -y --allow-unauthenticated update \
-  && sudo apt-get -y install net-tools iputils-ping \
-  && sudo apt-get -q -y autoremove \
-  && sudo apt-get -q -y clean && sudo rm -rf /var/lib/apt/lists/* && sudo rm -f /var/cache/apt/*.bin
+  && apt-get -y --allow-unauthenticated update \
+  && apt-get -y install curl iputils-ping net-tools openjdk-11-jdk sudo \
+  && apt-get -q -y autoremove \
+  && apt-get -q -y clean && rm -rf /var/lib/apt/lists/* && rm -f /var/cache/apt/*.bin
+
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
+
+RUN set -ex \
+  && curl --create-dirs -sSLo /usr/share/jenkins/swarm-client-${IMAGE_ARG_VERSION:-3.15}-jar-with-dependencies.jar \
+    https://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/swarm-client/${IMAGE_ARG_VERSION:-3.15}/swarm-client-${IMAGE_ARG_VERSION:-3.15}.jar \
+  && chmod 755 /usr/share/jenkins \
+  && mkdir -p /home/${IMAGE_ARG_USER:-debian}/.m2 \
+  && mkdir -p /home/${IMAGE_ARG_USER:-debian}/.ssh
+
+VOLUME /home/${IMAGE_ARG_USER:-debian}
+
+
+RUN set -ex \
+  && echo ===== Create user ===== \
+  && groupadd --gid 1000 ubuntu \
+  && mkdir -p /home/ubuntu \
+  && useradd -c "ubuntu user" --home-dir /home/ubuntu --shell /bin/bash -g ubuntu -m --uid 1000 ubuntu && chown -R ubuntu:ubuntu /home/ubuntu \
+  && usermod -a -G root ubuntu \
+  && echo 'if [ "$BASH" ]; then if [ -f ~/.bashrc ]; then . ~/.bashrc; fi; fi' | tee -a /root/.bash_profile \
+  && cp /root/.profile /home/ubuntu/.profile \
+  && cp /root/.bashrc /home/ubuntu/.bashrc \
+  && cp /root/.bash_profile /home/ubuntu/.bash_profile \
+  && chown -R 1000:1000 /home/ubuntu \
+  && echo "ubuntu ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/ubuntu \
+  && chmod 0440 /etc/sudoers.d/ubuntu
+
+WORKDIR /home/ubuntu
+USER    ubuntu
+ENV HOME=/home/ubuntu \
+	SHELL=/bin/bash \
+	USER=ubuntu
+
+
+COPY docker /
+ENV PATH /usr/local/bin:${PATH}
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
