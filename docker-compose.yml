@@ -31,7 +31,7 @@ services:
     #- standalone.nexus:standalone.nexus3
     #- mvnsite:mvnsite
     hostname: ${CONTAINER_HOST_NAME:-standalone.jenkins-swarm-slave}
-    image: ${IMAGE_PREFIX:-cirepo/}${IMAGE_NAME:-jenkins-swarm-slave}:${IMAGE_TAG:-3.15-en_US.UTF-8_Etc.UTC-bionic}
+    image: ${IMAGE_PREFIX:-cirepo/}${IMAGE_NAME:-jenkins-swarm-slave}:${IMAGE_TAG:-3.15-en_US.UTF-8_Etc.UTC-buster}
     # --init Prevent jenkins to leak zombie processes
     init: true
     labels:

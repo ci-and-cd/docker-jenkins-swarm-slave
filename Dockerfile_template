@@ -37,12 +37,13 @@ ENV JAVA_OPTS -Duser.language=${IMAGE_ARG_LANGUAGE:-en} -Duser.region=${IMAGE_AR
 # install netstat to allow connection health check with
 # netstat -tan | grep ESTABLISHED
 RUN set -ex \
+  && echo "deb http://deb.debian.org/debian/ sid main" | tee -a /etc/apt/sources.list \
   && apt-get -y --allow-unauthenticated update \
-  && apt-get -y install curl iputils-ping net-tools openjdk-11-jdk sudo \
+  && apt-get -y install curl iputils-ping net-tools openjdk-8-jdk sudo \
   && apt-get -q -y autoremove \
   && apt-get -q -y clean && rm -rf /var/lib/apt/lists/* && rm -f /var/cache/apt/*.bin
 
-ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 
 RUN set -ex \
   && curl --create-dirs -sSLo /usr/share/jenkins/swarm-client-${IMAGE_ARG_VERSION:-3.15}-jar-with-dependencies.jar \
@@ -56,23 +57,23 @@ VOLUME /home/${IMAGE_ARG_USER:-debian}
 
 RUN set -ex \
   && echo ===== Create user ===== \
-  && groupadd --gid 1000 ubuntu \
-  && mkdir -p /home/ubuntu \
-  && useradd -c "ubuntu user" --home-dir /home/ubuntu --shell /bin/bash -g ubuntu -m --uid 1000 ubuntu && chown -R ubuntu:ubuntu /home/ubuntu \
-  && usermod -a -G root ubuntu \
+  && groupadd --gid 1000 debian \
+  && mkdir -p /home/debian \
+  && useradd -c "debian user" --home-dir /home/debian --shell /bin/bash -g debian -m --uid 1000 debian && chown -R debian:debian /home/debian \
+  && usermod -a -G root debian \
   && echo 'if [ "$BASH" ]; then if [ -f ~/.bashrc ]; then . ~/.bashrc; fi; fi' | tee -a /root/.bash_profile \
-  && cp /root/.profile /home/ubuntu/.profile \
-  && cp /root/.bashrc /home/ubuntu/.bashrc \
-  && cp /root/.bash_profile /home/ubuntu/.bash_profile \
-  && chown -R 1000:1000 /home/ubuntu \
-  && echo "ubuntu ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/ubuntu \
-  && chmod 0440 /etc/sudoers.d/ubuntu
+  && cp /root/.profile /home/debian/.profile \
+  && cp /root/.bashrc /home/debian/.bashrc \
+  && cp /root/.bash_profile /home/debian/.bash_profile \
+  && chown -R 1000:1000 /home/debian \
+  && echo "debian ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/debian \
+  && chmod 0440 /etc/sudoers.d/debian
 
-WORKDIR /home/ubuntu
-USER    ubuntu
-ENV HOME=/home/ubuntu \
+WORKDIR /home/debian
+USER    debian
+ENV HOME=/home/debian \
 	SHELL=/bin/bash \
-	USER=ubuntu
+	USER=debian
 
 
 COPY docker /
