@@ -1,0 +1,42 @@
+
+version: '2.2'
+services:
+  jenkins-swarm-slave-base:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        #- IMAGE_ARG_APT_MIRROR=${IMAGE_ARG_APT_MIRROR:-mirrors.163.com}
+
+        - IMAGE_ARG_ENCODING=${IMAGE_ARG_ENCODING:-UTF-8}
+        - IMAGE_ARG_JAVA_OPTS=${IMAGE_ARG_JAVA_OPTS}
+        - IMAGE_ARG_LANGUAGE=${IMAGE_ARG_LANGUAGE:-en}
+        - IMAGE_ARG_LOCALE=${IMAGE_ARG_LOCALE:-en_US}
+        - IMAGE_ARG_REGION=${IMAGE_ARG_REGION:-US}
+        #- IMAGE_ARG_TZ=${IMAGE_ARG_TZ:-UTC+8:00}
+        - IMAGE_ARG_TZ_AREA=${IMAGE_ARG_TZ_AREA:-Etc}
+        - IMAGE_ARG_TZ_ZONE=${IMAGE_ARG_TZ_ZONE:-UTC}
+
+        - IMAGE_ARG_USER=${IMAGE_ARG_USER:-debian}
+        - IMAGE_ARG_VERSION=${IMAGE_ARG_VERSION:-3.15}
+    #command: ["-username", "slave", "-password", "slave_pass", "-executors", "3"]
+    command: ${JENKINS_SWARN_SLAVE_COMMAND:--username slave -password slave_pass -executors 1}
+    environment:
+      - JENKINS_PORT_8080_TCP_ADDR=${JENKINS_PORT_8080_TCP_ADDR:-standalone.jenkins}
+      - JENKINS_PORT_8080_TCP_PORT=${JENKINS_PORT_8080_TCP_PORT:-8080}
+
+    #external_links:
+    #- standalone.jenkins:standalone.jenkins
+    #- standalone.nexus:standalone.nexus3
+    #- mvnsite:mvnsite
+    image: ${IMAGE_PREFIX:-cirepo/}${IMAGE_NAME:-jenkins-swarm-slave}:${IMAGE_TAG:-3.15-en_US.UTF-8_Etc.UTC-buster}
+    # --init Prevent jenkins to leak zombie processes
+    init: true
+    labels:
+      deploy.config.commit: ${LABEL_DEPLOY_CONFIG_COMMIT:-unknown}
+      deploy.config.name: ${LABEL_DEPLOY_CONFIG_NAME:-unknown}
+      deploy.config.ref: ${LABEL_DEPLOY_CONFIG_REF:-unknown}
+      deploy.util.commit: ${LABEL_DEPLOY_UTIL_COMMIT:-unknown}
+      deploy.util.ref: ${LABEL_DEPLOY_UTIL_REF:-unknown}
+    # network_mode: bridge
+    restart: always

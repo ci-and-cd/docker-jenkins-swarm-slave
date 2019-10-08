@@ -1,57 +1,305 @@
 
 version: '2.2'
 services:
-  jenkins-swarm-slave:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-      #- IMAGE_ARG_APT_MIRROR=${IMAGE_ARG_APT_MIRROR:-mirrors.163.com}
-
-      - IMAGE_ARG_ENCODING=${IMAGE_ARG_ENCODING:-UTF-8}
-      - IMAGE_ARG_JAVA_OPTS=${IMAGE_ARG_JAVA_OPTS}
-      - IMAGE_ARG_LANGUAGE=${IMAGE_ARG_LANGUAGE:-en}
-      - IMAGE_ARG_LOCALE=${IMAGE_ARG_LOCALE:-en_US}
-      - IMAGE_ARG_REGION=${IMAGE_ARG_REGION:-US}
-      #- IMAGE_ARG_TZ=${IMAGE_ARG_TZ:-UTC+8:00}
-      - IMAGE_ARG_TZ_AREA=${IMAGE_ARG_TZ_AREA:-Etc}
-      - IMAGE_ARG_TZ_ZONE=${IMAGE_ARG_TZ_ZONE:-UTC}
-
-      - IMAGE_ARG_USER=${IMAGE_ARG_USER:-debian}
-      - IMAGE_ARG_VERSION=${IMAGE_ARG_VERSION:-3.15}
-    #command: ["-username", "slave", "-password", "slave_pass", "-executors", "3"]
-    command: ${JENKINS_SWARN_SLAVE_COMMAND:--username slave -password slave_pass -executors 3}
-    container_name: ${CONTAINER_HOST_NAME:-standalone.jenkins-swarm-slave}
-    environment:
-    - JENKINS_PORT_8080_TCP_ADDR=${JENKINS_PORT_8080_TCP_ADDR:-standalone.jenkins}
-    - JENKINS_PORT_8080_TCP_PORT=${JENKINS_PORT_8080_TCP_PORT:-8080}
-
-    #external_links:
-    #- standalone.jenkins:standalone.jenkins
-    #- standalone.nexus:standalone.nexus3
-    #- mvnsite:mvnsite
-    hostname: ${CONTAINER_HOST_NAME:-standalone.jenkins-swarm-slave}
-    image: ${IMAGE_PREFIX:-cirepo/}${IMAGE_NAME:-jenkins-swarm-slave}:${IMAGE_TAG:-3.15-en_US.UTF-8_Etc.UTC-buster}
-    # --init Prevent jenkins to leak zombie processes
-    init: true
+  jenkins-swarm_slave-01:
+    extends:
+      file: docker-compose-base.yml
+      service: jenkins-swarm-slave-base
+    container_name: ${CONTAINER_HOST_NAME:-slave-01.jenkins-swarm-slave}
+    hostname: ${CONTAINER_HOST_NAME:-slave-01.jenkins-swarm-slave}
     labels:
-      deploy.config.commit: ${LABEL_DEPLOY_CONFIG_COMMIT:-unknown}
-      deploy.config.name: ${LABEL_DEPLOY_CONFIG_NAME:-unknown}
-      deploy.config.ref: ${LABEL_DEPLOY_CONFIG_REF:-unknown}
-      deploy.util.commit: ${LABEL_DEPLOY_UTIL_COMMIT:-unknown}
-      deploy.util.ref: ${LABEL_DEPLOY_UTIL_REF:-unknown}
-      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-standalone.jenkins-swarm-slave}
-      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/standalone}
-    # network_mode: bridge
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-01.jenkins-swarm-slave}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-01}
     networks:
       local-network:
-        ipv4_address: ${IPV4_ADDRESS:-172.16.238.36}
-        #ipv6_address: ${IPV6_ADDRESS:-2001:3984:3989::36}
-    restart: always
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.120}
     volumes:
-    - data:/home/${IMAGE_ARG_USER:-debian}
-    - /var/run/docker.sock:/var/run/docker.sock
+    - data_slave-01:/home/${IMAGE_ARG_USER:-debian}
 
+  jenkins-swarm_slave-02:
+    extends:
+      file: docker-compose-base.yml
+      service: jenkins-swarm-slave-base
+    container_name: ${CONTAINER_HOST_NAME:-slave-02.jenkins-swarm-slave}
+    hostname: ${CONTAINER_HOST_NAME:-slave-02.jenkins-swarm-slave}
+    labels:
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-02.jenkins-swarm-slave}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-02}
+    networks:
+      local-network:
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.121}
+    volumes:
+      - data_slave-02:/home/${IMAGE_ARG_USER:-debian}
+
+  jenkins-swarm_slave-03:
+    extends:
+      file: docker-compose-base.yml
+      service: jenkins-swarm-slave-base
+    container_name: ${CONTAINER_HOST_NAME:-slave-03.jenkins-swarm-slave}
+    hostname: ${CONTAINER_HOST_NAME:-slave-03.jenkins-swarm-slave}
+    labels:
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-03.jenkins-swarm-slave}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-03}
+    networks:
+      local-network:
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.122}
+    volumes:
+      - data_slave-03:/home/${IMAGE_ARG_USER:-debian}
+
+  jenkins-swarm_slave-04:
+    extends:
+      file: docker-compose-base.yml
+      service: jenkins-swarm-slave-base
+    container_name: ${CONTAINER_HOST_NAME:-slave-04.jenkins-swarm-slave}
+    hostname: ${CONTAINER_HOST_NAME:-slave-04.jenkins-swarm-slave}
+    labels:
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-04.jenkins-swarm-slave}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-04}
+    networks:
+      local-network:
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.123}
+    volumes:
+      - data_slave-04:/home/${IMAGE_ARG_USER:-debian}
+
+  jenkins-swarm_slave-05:
+    extends:
+      file: docker-compose-base.yml
+      service: jenkins-swarm-slave-base
+    container_name: ${CONTAINER_HOST_NAME:-slave-05.jenkins-swarm-slave}
+    hostname: ${CONTAINER_HOST_NAME:-slave-05.jenkins-swarm-slave}
+    labels:
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-05.jenkins-swarm-slave}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-05}
+    networks:
+      local-network:
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.124}
+    volumes:
+      - data_slave-05:/home/${IMAGE_ARG_USER:-debian}
+
+  jenkins-swarm_slave-06:
+    extends:
+      file: docker-compose-base.yml
+      service: jenkins-swarm-slave-base
+    container_name: ${CONTAINER_HOST_NAME:-slave-06.jenkins-swarm-slave}
+    hostname: ${CONTAINER_HOST_NAME:-slave-06.jenkins-swarm-slave}
+    labels:
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-06.jenkins-swarm-slave}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-06}
+    networks:
+      local-network:
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.125}
+    volumes:
+      - data_slave-06:/home/${IMAGE_ARG_USER:-debian}
+
+  jenkins-swarm_slave-07:
+    extends:
+      file: docker-compose-base.yml
+      service: jenkins-swarm-slave-base
+    container_name: ${CONTAINER_HOST_NAME:-slave-07.jenkins-swarm-slave}
+    hostname: ${CONTAINER_HOST_NAME:-slave-07.jenkins-swarm-slave}
+    labels:
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-07.jenkins-swarm-slave}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-07}
+    networks:
+      local-network:
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.126}
+    volumes:
+      - data_slave-07:/home/${IMAGE_ARG_USER:-debian}
+
+  jenkins-swarm_slave-08:
+    extends:
+      file: docker-compose-base.yml
+      service: jenkins-swarm-slave-base
+    container_name: ${CONTAINER_HOST_NAME:-slave-08.jenkins-swarm-slave}
+    hostname: ${CONTAINER_HOST_NAME:-slave-08.jenkins-swarm-slave}
+    labels:
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-08.jenkins-swarm-slave}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-08}
+    networks:
+      local-network:
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.127}
+    volumes:
+      - data_slave-08:/home/${IMAGE_ARG_USER:-debian}
+
+  jenkins-swarm_slave-09:
+    extends:
+      file: docker-compose-base.yml
+      service: jenkins-swarm-slave-base
+    container_name: ${CONTAINER_HOST_NAME:-slave-09.jenkins-swarm-slave}
+    hostname: ${CONTAINER_HOST_NAME:-slave-09.jenkins-swarm-slave}
+    labels:
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-09.jenkins-swarm-slave}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-09}
+    networks:
+      local-network:
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.128}
+    volumes:
+      - data_slave-09:/home/${IMAGE_ARG_USER:-debian}
+
+  jenkins-swarm_slave-10:
+    extends:
+      file: docker-compose-base.yml
+      service: jenkins-swarm-slave-base
+    container_name: ${CONTAINER_HOST_NAME:-slave-10.jenkins-swarm-slave}
+    hostname: ${CONTAINER_HOST_NAME:-slave-10.jenkins-swarm-slave}
+    labels:
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-10.jenkins-swarm-slave}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-10}
+    networks:
+      local-network:
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.129}
+    volumes:
+      - data_slave-10:/home/${IMAGE_ARG_USER:-debian}
+
+  jenkins-swarm_slave-11:
+    extends:
+      file: docker-compose-base.yml
+      service: jenkins-swarm-slave-base
+    container_name: ${CONTAINER_HOST_NAME:-slave-11.jenkins-swarm-slave}
+    hostname: ${CONTAINER_HOST_NAME:-slave-11.jenkins-swarm-slave}
+    labels:
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-11.jenkins-swarm-slave}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-11}
+    networks:
+      local-network:
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.130}
+    volumes:
+      - data_slave-11:/home/${IMAGE_ARG_USER:-debian}
+
+  jenkins-swarm_slave-12:
+    extends:
+      file: docker-compose-base.yml
+      service: jenkins-swarm-slave-base
+    container_name: ${CONTAINER_HOST_NAME:-slave-12.jenkins-swarm-slave}
+    hostname: ${CONTAINER_HOST_NAME:-slave-12.jenkins-swarm-slave}
+    labels:
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-12.jenkins-swarm-slave}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-12}
+    networks:
+      local-network:
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.131}
+    volumes:
+      - data_slave-12:/home/${IMAGE_ARG_USER:-debian}
+
+  jenkins-swarm_slave-13:
+    extends:
+      file: docker-compose-base.yml
+      service: jenkins-swarm-slave-base
+    container_name: ${CONTAINER_HOST_NAME:-slave-13.jenkins-swarm-slave}
+    hostname: ${CONTAINER_HOST_NAME:-slave-13.jenkins-swarm-slave}
+    labels:
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-13.jenkins-swarm-slave}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-13}
+    networks:
+      local-network:
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.132}
+    volumes:
+      - data_slave-13:/home/${IMAGE_ARG_USER:-debian}
+
+  jenkins-swarm_slave-14:
+    extends:
+      file: docker-compose-base.yml
+      service: jenkins-swarm-slave-base
+    container_name: ${CONTAINER_HOST_NAME:-slave-14.jenkins-swarm-slave}
+    hostname: ${CONTAINER_HOST_NAME:-slave-14.jenkins-swarm-slave}
+    labels:
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-14.jenkins-swarm-slave}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-14}
+    networks:
+      local-network:
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.133}
+    volumes:
+      - data_slave-14:/home/${IMAGE_ARG_USER:-debian}
+
+  jenkins-swarm_slave-15:
+    extends:
+      file: docker-compose-base.yml
+      service: jenkins-swarm-slave-base
+    container_name: ${CONTAINER_HOST_NAME:-slave-15.jenkins-swarm-slave}
+    hostname: ${CONTAINER_HOST_NAME:-slave-15.jenkins-swarm-slave}
+    labels:
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-15.jenkins-swarm-slave}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-15}
+    networks:
+      local-network:
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.134}
+    volumes:
+      - data_slave-15:/home/${IMAGE_ARG_USER:-debian}
+
+#  jenkins-swarm_slave-16:
+#    extends:
+#      file: docker-compose-base.yml
+#      service: jenkins-swarm-slave-base
+#    container_name: ${CONTAINER_HOST_NAME:-slave-16.jenkins-swarm-slave}
+#    hostname: ${CONTAINER_HOST_NAME:-slave-16.jenkins-swarm-slave}
+#    labels:
+#      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-16.jenkins-swarm-slave}
+#      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-16}
+#    networks:
+#      local-network:
+#        ipv4_address: ${IPV4_ADDRESS:-172.16.238.135}
+#    volumes:
+#      - data_slave-16:/home/${IMAGE_ARG_USER:-debian}
+#
+#  jenkins-swarm_slave-17:
+#    extends:
+#      file: docker-compose-base.yml
+#      service: jenkins-swarm-slave-base
+#    container_name: ${CONTAINER_HOST_NAME:-slave-17.jenkins-swarm-slave}
+#    hostname: ${CONTAINER_HOST_NAME:-slave-17.jenkins-swarm-slave}
+#    labels:
+#      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-17.jenkins-swarm-slave}
+#      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-17}
+#    networks:
+#      local-network:
+#        ipv4_address: ${IPV4_ADDRESS:-172.16.238.136}
+#    volumes:
+#      - data_slave-17:/home/${IMAGE_ARG_USER:-debian}
+#
+#  jenkins-swarm_slave-18:
+#    extends:
+#      file: docker-compose-base.yml
+#      service: jenkins-swarm-slave-base
+#    container_name: ${CONTAINER_HOST_NAME:-slave-18.jenkins-swarm-slave}
+#    hostname: ${CONTAINER_HOST_NAME:-slave-18.jenkins-swarm-slave}
+#    labels:
+#      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-18.jenkins-swarm-slave}
+#      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-18}
+#    networks:
+#      local-network:
+#        ipv4_address: ${IPV4_ADDRESS:-172.16.238.137}
+#    volumes:
+#      - data_slave-18:/home/${IMAGE_ARG_USER:-debian}
+#
+#  jenkins-swarm_slave-19:
+#    extends:
+#      file: docker-compose-base.yml
+#      service: jenkins-swarm-slave-base
+#    container_name: ${CONTAINER_HOST_NAME:-slave-19.jenkins-swarm-slave}
+#    hostname: ${CONTAINER_HOST_NAME:-slave-19.jenkins-swarm-slave}
+#    labels:
+#      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-19.jenkins-swarm-slave}
+#      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-19}
+#    networks:
+#      local-network:
+#        ipv4_address: ${IPV4_ADDRESS:-172.16.238.138}
+#    volumes:
+#      - data_slave-19:/home/${IMAGE_ARG_USER:-debian}
+#
+#  jenkins-swarm_slave-20:
+#    extends:
+#      file: docker-compose-base.yml
+#      service: jenkins-swarm-slave-base
+#    container_name: ${CONTAINER_HOST_NAME:-slave-20.jenkins-swarm-slave}
+#    hostname: ${CONTAINER_HOST_NAME:-slave-20.jenkins-swarm-slave}
+#    labels:
+#      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-slave-20.jenkins-swarm-slave}
+#      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/jenkins-swarm-slave/slave-20}
+#    networks:
+#      local-network:
+#        ipv4_address: ${IPV4_ADDRESS:-172.16.238.139}
+#    volumes:
+#      - data_slave-20:/home/${IMAGE_ARG_USER:-debian}
 
 networks:
   local-network:
@@ -62,12 +310,125 @@ networks:
       driver: default
       config:
       - subnet: 172.16.238.0/24
-      #- subnet: 2001:3984:3989::/64
 
 volumes:
-  data:
+  data_slave-01:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/data
+      device: ${PWD}/data/slave-01
       o: bind
+  data_slave-02:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/slave-02
+      o: bind
+  data_slave-03:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/slave-03
+      o: bind
+  data_slave-04:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/slave-04
+      o: bind
+  data_slave-05:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/slave-05
+      o: bind
+  data_slave-06:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/slave-06
+      o: bind
+  data_slave-07:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/slave-07
+      o: bind
+  data_slave-08:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/slave-08
+      o: bind
+  data_slave-09:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/slave-09
+      o: bind
+  data_slave-10:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/slave-10
+      o: bind
+  data_slave-11:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/slave-11
+      o: bind
+  data_slave-12:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/slave-12
+      o: bind
+  data_slave-13:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/slave-13
+      o: bind
+  data_slave-14:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/slave-14
+      o: bind
+  data_slave-15:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/slave-15
+      o: bind
+#  data_slave-16:
+#    driver: local
+#    driver_opts:
+#      type: none
+#      device: ${PWD}/data/slave-16
+#      o: bind
+#  data_slave-17:
+#    driver: local
+#    driver_opts:
+#      type: none
+#      device: ${PWD}/data/slave-17
+#      o: bind
+#  data_slave-18:
+#    driver: local
+#    driver_opts:
+#      type: none
+#      device: ${PWD}/data/slave-18
+#      o: bind
+#  data_slave-19:
+#    driver: local
+#    driver_opts:
+#      type: none
+#      device: ${PWD}/data/slave-19
+#      o: bind
+#  data_slave-20:
+#    driver: local
+#    driver_opts:
+#      type: none
+#      device: ${PWD}/data/slave-20
+#      o: bind
